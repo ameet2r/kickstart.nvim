@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -189,6 +189,24 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+--Quickfix list navigation
+vim.keymap.set('n', '<leader>l', ':copen<CR>', { desc = 'Open Quickfix [l]ist' })
+vim.keymap.set('n', '<leader>ln', ':cnext<CR>', { desc = 'Go to [n]ext item in Quickfix [l]ist' })
+vim.keymap.set('n', '<leader>lp', ':cprev<CR>', { desc = 'Go to [p]rev item in Quickfix [l]ist' })
+
+-- Set tmux navigation
+vim.keymap.set('n', '<C-h>', '<cmd> TmuxNavigateLeft<CR>', { desc = 'window left' })
+vim.keymap.set('n', '<C-l>', '<cmd> TmuxNavigateRight<CR>', { desc = 'window right' })
+vim.keymap.set('n', '<C-j>', '<cmd> TmuxNavigateDown<CR>', { desc = 'window down' })
+vim.keymap.set('n', '<C-k>', '<cmd> TmuxNavigateUp<CR>', { desc = 'window up' })
+
+-- tmux-sessionizar usage while in nvim
+vim.keymap.set('n', '<C-f>', ':silent !tmux neww ~/Devenv/tmux-sessionizer<CR>', { desc = 'Create new tmux session using tmux-sessionizer script' })
+
+-- Macros
+-- Create new line in between brackets. Cursor should be on open bracket when running this macro.
+vim.keymap.set('n', '<leader>n', 'a<CR><CR><Esc>ki', { remap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -565,18 +583,15 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
-        --
+        html = { filetypes = { 'html', 'twig', 'hbs' } },
+        vtsls = {},
+        cssls = {},
+        tailwindcss = {},
 
         lua_ls = {
           -- cmd = {...},
@@ -835,7 +850,25 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'go',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'vim',
+        'vimdoc',
+        'python',
+        'rust',
+        'tsx',
+        'typescript',
+        'dockerfile',
+        'javascript',
+        'css',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -886,6 +919,22 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
+
+  {
+    'christoomey/vim-tmux-navigator',
+  },
+
+  {
+    'raimondi/delimitMate',
+  },
+
+  {
+    'jesseleite/nvim-macroni',
+  },
+
+  {
+    'tpope/vim-commentary',
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
